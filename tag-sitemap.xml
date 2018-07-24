@@ -3,14 +3,14 @@
 
     <url>
         <loc>http://yoursite-url/tags/Docker/</loc>
-        <lastmod>2018-07-24T12:54:17.331Z</lastmod>
+        <lastmod>2018-07-24T13:05:54.009Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://yoursite-url/tags/Kubernetes/</loc>
-        <lastmod>2018-07-24T12:54:17.331Z</lastmod>
+        <lastmod>2018-07-24T13:05:54.009Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
