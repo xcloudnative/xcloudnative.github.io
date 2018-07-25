@@ -7,19 +7,10 @@
     </url>
 
     <url>
-        <loc>http://yoursite-url/2018/07/25/aliyun-k8s-repo/</loc>
+        <loc>http://yoursite-url/categories/kubernetes/</loc>
         <lastmod>2018-07-25T04:03:12.059Z</lastmod>
         <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://yoursite-url/2018/07/24/kubernetes-install/</loc>
-        <lastmod>2018-07-24T14:49:55.718Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
+        <priority>0.2</priority>
     </url>
 
 </urlset>
