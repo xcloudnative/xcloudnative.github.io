@@ -7,6 +7,22 @@
     </url>
 
     <url>
+        <loc>http://yoursite-url/2018/07/25/build-self-docker-repo/</loc>
+        <lastmod>2018-07-25T16:05:42.132Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite-url/2018/07/25/kubeadm-install/</loc>
+        <lastmod>2018-07-25T15:46:59.400Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://yoursite-url/2018/07/25/aliyun-k8s-repo/</loc>
         <lastmod>2018-07-25T04:03:12.059Z</lastmod>
         <changefreq>weekly</changefreq>

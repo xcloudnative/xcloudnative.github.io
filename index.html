@@ -136,7 +136,7 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -150,7 +150,7 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -210,6 +210,92 @@
             
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2018/07/25/build-self-docker-repo/">
+        <h2 class="post-title">
+            无法访问gcr.io怎么办?搭建自己的镜像库
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            由于在国内无法访问gcr.io域名，安装kubernetes时很容易被镜像无法下载而安装受阻，本文介绍使用docker hub和github来自动构建镜像的方法来使用gcr.io的相关镜像。
+账号准备
+
+github账号，用来存放镜像Dockerfile文件。
+docker hub账号，用来build镜像。
+阿里云账号，用来创建镜像仓库，上传镜像。
+
+创建github仓库
+创建github代......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Yaojun Yu on
+            2018-07-25
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Docker" title="Docker">Docker</a>
+            
+              <a href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2018/07/25/kubeadm-install/">
+        <h2 class="post-title">
+            国内环境安装kubeadm
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            使用kubeadm安装kubernetes集群会方便很多，但是国内网络环境在安装过程中下载k8s.gcr.io的镜像受阻，本文将告诉你基于国内环境如何使用kubeadm工具来安装部署kubernetes集群。
+安装之前
+本文将使用最简单的两台机器进行试验，节点信息如下：
+
+
+
+IP Address
+Host Name
+CPU
+Mem
+DISK
+OS
+备注
+
+
+
+
+192.168.1.12
+k......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Yaojun Yu on
+            2018-07-25
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#kubeadm" title="kubeadm">kubeadm</a>
+            
+              <a href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
+            
+        </div>
+    
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -380,6 +466,14 @@
     <ul>
       
         <li>
+          <a href="/2018/07/25/build-self-docker-repo/">无法访问gcr.io怎么办?搭建自己的镜像库</a>
+        </li>
+      
+        <li>
+          <a href="/2018/07/25/kubeadm-install/">国内环境安装kubeadm</a>
+        </li>
+      
+        <li>
           <a href="/2018/07/25/aliyun-k8s-repo/">阿里云kubernetes镜像源</a>
         </li>
       
@@ -400,11 +494,19 @@
     <div class="tags">
         
             
-        
+            <a href="/tags/#kubeadm" title="kubeadm" rel="2">kubeadm</a>
             
         
             
         
+            
+        
+            
+            <a href="/tags/#Docker" title="Docker" rel="2">Docker</a>
+            
+        
+            
+            <a href="/tags/#kubernetes" title="kubernetes" rel="2">kubernetes</a>
             
         
             

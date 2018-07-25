@@ -136,7 +136,7 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -150,7 +150,7 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -225,6 +225,36 @@
                     <span class="tag-text">2018</span>
                 </span>
                 <ul>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    07-25
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2018/07/25/build-self-docker-repo/" style="color: #0085a1">
+                        <span>
+                            无法访问gcr.io怎么办?搭建自己的镜像库
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    07-25
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2018/07/25/kubeadm-install/" style="color: #0085a1">
+                        <span>
+                            国内环境安装kubeadm
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
                 
                   <!-- <li class="listing-item">
                   <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
@@ -343,6 +373,14 @@
     <ul>
       
         <li>
+          <a href="/2018/07/25/build-self-docker-repo/">无法访问gcr.io怎么办?搭建自己的镜像库</a>
+        </li>
+      
+        <li>
+          <a href="/2018/07/25/kubeadm-install/">国内环境安装kubeadm</a>
+        </li>
+      
+        <li>
           <a href="/2018/07/25/aliyun-k8s-repo/">阿里云kubernetes镜像源</a>
         </li>
       
@@ -363,11 +401,19 @@
     <div class="tags">
         
             
-        
+            <a href="/tags/#kubeadm" title="kubeadm" rel="2">kubeadm</a>
             
         
             
         
+            
+        
+            
+            <a href="/tags/#Docker" title="Docker" rel="2">Docker</a>
+            
+        
+            
+            <a href="/tags/#kubernetes" title="kubernetes" rel="2">kubernetes</a>
             
         
             

@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          阿里云kubernetes镜像源 - Yaojun&#39;s Blog
+          无法访问gcr.io怎么办?搭建自己的镜像库 - Yaojun&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://yoursite-url/2018/07/25/aliyun-k8s-repo/">
+    <link rel="canonical" href="http://yoursite-url/2018/07/25/build-self-docker-repo/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -69,7 +69,7 @@
 <style type="text/css">
     header.intro-header{
         
-            background-image: url('Demo.png')
+            background-image: url('null')
             /*post*/
         
     }
@@ -90,14 +90,12 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#kubeadm" title="kubeadm">kubeadm</a>
+                              <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
                             
-                              <a class="tag" href="/tags/#kubernets" title="kubernets">kubernets</a>
-                            
-                              <a class="tag" href="/tags/#yum" title="yum">yum</a>
+                              <a class="tag" href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
                             
                         </div>
-                        <h1>阿里云kubernetes镜像源</h1>
+                        <h1>无法访问gcr.io怎么办?搭建自己的镜像库</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Yaojun Yu on
@@ -218,13 +216,24 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>使用kubeadm安装kubernets时官方推荐使用的yum源是<code>packages.cloud.google.com</code>域名下的，这对于我们这些身在天朝的人来说可望不可及，除非花大力气去搬来一把梯子，这往往耗费我们很大一部分精力。还好，阿里云提供了kubernetes安装的yum源，可以解决安装的网络问题。</p>
-<h1><span id="官方镜像源">官方镜像源</span></h1>
-<p>查看官方安装文档时，推荐的kubernetes安装镜像yum源如下，如果有网络访问能力推荐使用官方源。</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[kubernetes]</span></span><br><span class="line"><span class="attr">name</span>=Kubernetes</span><br><span class="line"><span class="attr">baseurl</span>=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x<span class="number">86_64</span></span><br><span class="line"><span class="attr">enabled</span>=<span class="number">1</span></span><br><span class="line"><span class="attr">gpgcheck</span>=<span class="number">1</span></span><br><span class="line"><span class="attr">repo_gpgcheck</span>=<span class="number">1</span></span><br><span class="line"><span class="attr">gpgkey</span>=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg</span><br></pre></td></tr></table></figure>
-<h1><span id="阿里云镜像源">阿里云镜像源</span></h1>
-<p>阿里云提供了镜像源，注意不要开启<code>gpgcheck</code>，不过阿里云的源存在更新不及时的问题，安装时注意。</p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo</span><br><span class="line">[kubernetes]</span><br><span class="line">name=Kubernetes</span><br><span class="line">baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">repo_gpgcheck=0</span><br><span class="line">gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg</span><br><span class="line">        http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+                <p>由于在国内无法访问gcr.io域名，安装kubernetes时很容易被镜像无法下载而安装受阻，本文介绍使用docker hub和github来自动构建镜像的方法来使用gcr.io的相关镜像。</p>
+<h1><span id="账号准备">账号准备</span></h1>
+<ul>
+<li>github账号，用来存放镜像Dockerfile文件。</li>
+<li>docker hub账号，用来build镜像。</li>
+<li>阿里云账号，用来创建镜像仓库，上传镜像。</li>
+</ul>
+<h1><span id="创建github仓库">创建github仓库</span></h1>
+<p>创建github代码仓库googlecontainer，下载后上传各个镜像的Dockerfile，如kube-apiserver的Dockerfile如下：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> k8s.gcr.io/kube-apiserver-amd64:v1.<span class="number">11.1</span></span><br><span class="line">MAINTAINTER yourname@email.com</span><br></pre></td></tr></table></figure>
+<p>编辑好后提交代码。</p>
+<h1><span id="创建docker镜像">创建docker镜像</span></h1>
+<p>登录docker hub官网，点击 <code>create automated build</code>菜单，创建构建镜像。创建之前需要绑定github账号。</p>
+<p>创建镜像名称，进入<code>Build Setting</code>stab页面，点击<code>Trigger</code>按钮，保存变更。</p>
+<p>进入<code>Build Details</code>tab页面查看构建进度，一开始会加入构建队列，几分钟后就会构建完成，就可以拉取镜像了。</p>
+<h1><span id="创建阿里云镜像仓库">创建阿里云镜像仓库</span></h1>
+<p>登录阿里云账号，创建镜像仓库后就可以上传了。一下脚本是拉取docker.io上构建好的镜像，修改景象名称，然后上传到阿里云镜像仓库，以后就可以从阿里云镜像仓库上下载了，速度快了很多。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">""</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"=========================================================="</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Pull Kubernetes 1.11.1 Images from docker.io ......"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"=========================================================="</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">""</span></span><br><span class="line"></span><br><span class="line">FROM_REGISTRY=docker.io/rainfish</span><br><span class="line">TO_REGISTRY=registry.cn-hangzhou.aliyuncs.com/junchen</span><br><span class="line">GOOGLE_REGISTRY=k8s.gcr.io</span><br><span class="line"></span><br><span class="line"><span class="comment">## 拉取镜像</span></span><br><span class="line">docker pull <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/kube-apiserver-amd64:v1.11.1</span><br><span class="line">docker pull <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/kube-controller-manager-amd64:v1.11.1</span><br><span class="line">docker pull <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/kube-scheduler-amd64:v1.11.1</span><br><span class="line">docker pull <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/kube-proxy-amd64:v1.11.1</span><br><span class="line">docker pull <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/etcd-amd64:3.2.18</span><br><span class="line">docker pull <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/pause-amd64:3.1</span><br><span class="line">docker pull <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/coredns:1.1.3</span><br><span class="line">docker pull <span class="variable">$&#123;FROM_REGISTEY&#125;</span>/kubernetes-dashboard-amd64:v1.8.3</span><br><span class="line"></span><br><span class="line"><span class="comment">## 添加官方tag</span></span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/kube-apiserver-amd64:v1.11.1 <span class="variable">$&#123;GOOGLE_REGISTRY&#125;</span>/kube-apiserver-amd64:v1.11.1</span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/kube-scheduler-amd64:v1.11.1 <span class="variable">$&#123;GOOGLE_REGISTRY&#125;</span>/kube-scheduler-amd64:v1.11.1</span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/kube-controller-manager-amd64:v1.11.1 <span class="variable">$&#123;GOOGLE_REGISTRY&#125;</span>/kube-controller-manager-amd64:v1.11.1</span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/kube-proxy-amd64:v1.11.1 <span class="variable">$&#123;GOOGLE_REGISTRY&#125;</span>/kube-proxy-amd64:v1.11.1</span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/etcd-amd64:3.2.18 <span class="variable">$&#123;GOOGLE_REGISTRY&#125;</span>/etcd-amd64:3.2.18</span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/pause-amd64:3.1 <span class="variable">$&#123;GOOGLE_REGISTRY&#125;</span>/pause-amd64:3.1</span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/coredns:1.1.3 <span class="variable">$&#123;GOOGLE_REGISTRY&#125;</span>/coredns:1.1.3</span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/kubernetes-dashboard-amd64:v1.8.3 <span class="variable">$&#123;GOOGLE_REGISTRY&#125;</span>/kubernetes-dashboard-amd64:v1.8.3</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## 添加tag</span></span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/kube-apiserver-amd64:v1.11.1 <span class="variable">$&#123;TO_REGISTRY&#125;</span>/kube-apiserver-amd64:v1.11.1</span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/kube-scheduler-amd64:v1.11.1 <span class="variable">$&#123;TO_REGISTRY&#125;</span>/kube-scheduler-amd64:v1.11.1</span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/kube-controller-manager-amd64:v1.11.1 <span class="variable">$&#123;TO_REGISTRY&#125;</span>/kube-controller-manager-amd64:v1.11.1</span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/kube-proxy-amd64:v1.11.1 <span class="variable">$&#123;TO_REGISTRY&#125;</span>/kube-proxy-amd64:v1.11.1</span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/etcd-amd64:3.2.18 <span class="variable">$&#123;TO_REGISTRY&#125;</span>/etcd-amd64:3.2.18</span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/pause-amd64:3.1 <span class="variable">$&#123;TO_REGISTRY&#125;</span>/pause-amd64:3.1</span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/coredns:1.1.3 <span class="variable">$&#123;TO_REGISTRY&#125;</span>/coredns:1.1.3</span><br><span class="line">docker tag <span class="variable">$&#123;FROM_REGISTRY&#125;</span>/kubernetes-dashboard-amd64:v1.8.3 <span class="variable">$&#123;TO_REGISTRY&#125;</span>/kubernetes-dashboard-amd64:v1.8.3</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">""</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"=========================================================="</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Pull Kubernetes 1.11.1 Images FINISHED."</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"=========================================================="</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 上传镜像</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">""</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"=========================================================="</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Push Kubernetes 1.11.0 Images to <span class="variable">$&#123;TO_REGISTRY&#125;</span>."</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"=========================================================="</span></span><br><span class="line">docker push <span class="variable">$&#123;TO_REGISTRY&#125;</span>/kube-apiserver-amd64:v1.11.1</span><br><span class="line">docker push <span class="variable">$&#123;TO_REGISTRY&#125;</span>/kube-scheduler-amd64:v1.11.1</span><br><span class="line">docker push <span class="variable">$&#123;TO_REGISTRY&#125;</span>/kube-controller-manager-amd64:v1.11.1</span><br><span class="line">docker push <span class="variable">$&#123;TO_REGISTRY&#125;</span>/kube-proxy-amd64:v1.11.1</span><br><span class="line">docker push <span class="variable">$&#123;TO_REGISTRY&#125;</span>/etcd-amd64:3.2.18</span><br><span class="line">docker push <span class="variable">$&#123;TO_REGISTRY&#125;</span>/pause-amd64:3.1</span><br><span class="line">docker push <span class="variable">$&#123;TO_REGISTRY&#125;</span>/coredns:1.1.3</span><br><span class="line">docker push <span class="variable">$&#123;TO_REGISTRY&#125;</span>/kubernetes-dashboard-amd64:v1.8.3</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">""</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"=========================================================="</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Push Kubernetes 1.11.1 Images FINISHED."</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"=========================================================="</span></span><br></pre></td></tr></table></figure>
 
                 
 
@@ -232,13 +241,9 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2018/07/25/kubeadm-install/" data-toggle="tooltip" data-placement="top" title="国内环境安装kubeadm">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2018/07/24/kubernetes-install/" data-toggle="tooltip" data-placement="top" title="kubernete集群搭建与安装部署(v1.11.0)">Next Post &rarr;</a>
+                            <a href="/2018/07/25/kubeadm-install/" data-toggle="tooltip" data-placement="top" title="国内环境安装kubeadm">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -268,7 +273,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">官方镜像源</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">阿里云镜像源</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">账号准备</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">创建github仓库</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">创建docker镜像</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">创建阿里云镜像仓库</span></a></li></ol>
         
         </div>
       </aside>
@@ -288,11 +293,9 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#kubeadm" title="kubeadm">kubeadm</a>
+                          <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
                         
-                          <a class="tag" href="/tags/#kubernets" title="kubernets">kubernets</a>
-                        
-                          <a class="tag" href="/tags/#yum" title="yum">yum</a>
+                          <a class="tag" href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
                         
                     </div>
                 </section>
@@ -327,8 +330,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "your-disqus-ID";
-    var disqus_identifier = "http://yoursite-url/2018/07/25/aliyun-k8s-repo/";
-    var disqus_url = "http://yoursite-url/2018/07/25/aliyun-k8s-repo/";
+    var disqus_identifier = "http://yoursite-url/2018/07/25/build-self-docker-repo/";
+    var disqus_url = "http://yoursite-url/2018/07/25/build-self-docker-repo/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
