@@ -23,13 +23,6 @@
     </url>
 
     <url>
-        <loc>http://yoursite-url/tags/kubeadm/</loc>
-        <lastmod>2018-07-25T15:46:59.400Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://yoursite-url/tags/Docker/</loc>
         <lastmod>2018-07-25T16:05:42.132Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -38,7 +31,14 @@
 
     <url>
         <loc>http://yoursite-url/tags/kubernetes/</loc>
-        <lastmod>2018-07-25T16:05:42.132Z</lastmod>
+        <lastmod>2018-07-25T16:07:21.035Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite-url/tags/kubeadm/</loc>
+        <lastmod>2018-07-25T16:07:21.035Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
