@@ -90,9 +90,9 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
-                            
                               <a class="tag" href="/tags/#kubeadm" title="kubeadm">kubeadm</a>
+                            
+                              <a class="tag" href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
                             
                         </div>
                         <h1>国内环境安装kubeadm</h1>
@@ -146,6 +146,13 @@
 
                         
                         <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
                             <a href="/about/">About</a>
                         </li>
                         
@@ -154,13 +161,6 @@
                         
                         <li>
                             <a href="/archive/">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -360,7 +360,7 @@
 <p>** Default port range for <a href="https://kubernetes.io/docs/concepts/services-networking/service/" target="_blank" rel="noopener">NodePort Services</a>.</p>
 <blockquote>
 <p>节点之间进行安全认证通信，需要打开相应的网络端口，为了简单期间，内部网络节点可以直接关闭防火墙。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; systemctl <span class="built_in">disable</span> firewalld &amp;&amp; systemctl stop firewalld</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+<p><code>systemctl disable firewalld &amp;&amp; systemctl stop firewalld</code></p>
 </blockquote>
 <h2 id="selinux禁用">SELinux禁用</h2>
 <p>k8s要求禁用SELinux，使用如下命令：</p>
@@ -395,15 +395,9 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">$ kubeadm init --service-cidr 10.96.0.0/12 \</span><br><span class="line">               --kubernetes-version v1.11.1 \</span><br><span class="line">               --pod-network-cidr 192.168.0.0/16 \</span><br><span class="line">               --token b0f7b8.8d1767876297d85c \</span><br><span class="line">               --apiserver-advertise-address 192.168.1.9</span><br><span class="line"></span><br><span class="line">......</span><br><span class="line">Your Kubernetes master has initialized successfully!</span><br><span class="line"></span><br><span class="line">To start using your cluster, you need to run the following as a regular user:</span><br><span class="line"></span><br><span class="line">  mkdir -p <span class="variable">$HOME</span>/.kube</span><br><span class="line">  sudo cp -i /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line">  sudo chown $(id -u):$(id -g) <span class="variable">$HOME</span>/.kube/config</span><br><span class="line"></span><br><span class="line">You should now deploy a pod network to the cluster.</span><br><span class="line">Run <span class="string">"kubectl apply -f [podnetwork].yaml"</span> with one of the options listed at:</span><br><span class="line">  https://kubernetes.io/docs/concepts/cluster-administration/addons/</span><br><span class="line"></span><br><span class="line">You can now join any number of machines by running the following on each node</span><br><span class="line">as root:</span><br><span class="line"></span><br><span class="line">  kubeadm join 192.168.1.12:6443 --token g1yor7.tdkxa53lmuulirzu --discovery-token-ca-cert-hash sha256:c10462631e76b83660042b16ac488f31c731e3188a655e3dc4fd58f746beb460</span><br></pre></td></tr></table></figure>
 <blockquote>
 <ul>
-<li>
-<p><code>--pod-network-cidr</code> 采用calico网络插件时传<code>10.244.0.0/16</code>，采用flannel网络插件时传<code>10.244.0.0/16</code>。</p>
-</li>
-<li>
-<p>–apiserver-advertise-address时虚拟的IP地址。</p>
-</li>
-<li>
-<p><code>kubectl</code>默认使用<code>$HOME/.kube/config</code>文件进行连接，将生成的<code>/etc/kubernetes/admin.conf</code>作为配置文件就可以使用kubectl和节点进行交互了，比如查看节点状态<code>kubectl get node</code>。</p>
-</li>
+<li><code>--pod-network-cidr</code> 采用calico网络插件时传<code>192.168.0.0/16</code>，采用flannel网络插件时传<code>10.244.0.0/16</code>。</li>
+<li>–apiserver-advertise-address时虚拟的IP地址。</li>
+<li><code>kubectl</code>默认使用<code>$HOME/.kube/config</code>文件进行连接，将生成的<code>/etc/kubernetes/admin.conf</code>作为配置文件就可以使用kubectl和节点进行交互了，比如查看节点状态<code>kubectl get node</code>。</li>
 </ul>
 </blockquote>
 <p>初始化如果顺利的话会看到kubeadm的下一步操作提示，这是查看node状态会发现是<code>NotReady</code>。</p>
@@ -560,9 +554,9 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
-                        
                           <a class="tag" href="/tags/#kubeadm" title="kubeadm">kubeadm</a>
+                        
+                          <a class="tag" href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
                         
                     </div>
                 </section>
