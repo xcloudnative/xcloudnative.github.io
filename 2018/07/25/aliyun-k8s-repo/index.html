@@ -219,10 +219,10 @@
                 post-container">
 
                 <p>使用kubeadm安装kubernets时官方推荐使用的yum源是<code>packages.cloud.google.com</code>域名下的，这对于我们这些身在天朝的人来说可望不可及，除非花大力气去搬来一把梯子，这往往耗费我们很大一部分精力。还好，阿里云提供了kubernetes安装的yum源，可以解决安装的网络问题。</p>
-<h1><span id="官方镜像源">官方镜像源</span></h1>
+<h1 id="官方镜像源">官方镜像源</h1>
 <p>查看官方安装文档时，推荐的kubernetes安装镜像yum源如下，如果有网络访问能力推荐使用官方源。</p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[kubernetes]</span></span><br><span class="line"><span class="attr">name</span>=Kubernetes</span><br><span class="line"><span class="attr">baseurl</span>=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x<span class="number">86_64</span></span><br><span class="line"><span class="attr">enabled</span>=<span class="number">1</span></span><br><span class="line"><span class="attr">gpgcheck</span>=<span class="number">1</span></span><br><span class="line"><span class="attr">repo_gpgcheck</span>=<span class="number">1</span></span><br><span class="line"><span class="attr">gpgkey</span>=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg</span><br></pre></td></tr></table></figure>
-<h1><span id="阿里云镜像源">阿里云镜像源</span></h1>
+<h1 id="阿里云镜像源">阿里云镜像源</h1>
 <p>阿里云提供了镜像源，注意不要开启<code>gpgcheck</code>，不过阿里云的源存在更新不及时的问题，安装时注意。</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo</span><br><span class="line">[kubernetes]</span><br><span class="line">name=Kubernetes</span><br><span class="line">baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">repo_gpgcheck=0</span><br><span class="line">gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg</span><br><span class="line">        http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
 
@@ -268,7 +268,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">官方镜像源</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">阿里云镜像源</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#官方镜像源"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">官方镜像源</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#阿里云镜像源"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">阿里云镜像源</span></a></li></ol>
         
         </div>
       </aside>

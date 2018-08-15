@@ -90,9 +90,9 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#kubeadm" title="kubeadm">kubeadm</a>
-                            
                               <a class="tag" href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
+                            
+                              <a class="tag" href="/tags/#kubeadm" title="kubeadm">kubeadm</a>
                             
                         </div>
                         <h1>国内环境安装kubeadm</h1>
@@ -217,7 +217,7 @@
                 post-container">
 
                 <p>使用kubeadm安装kubernetes集群会方便很多，但是国内网络环境在安装过程中下载k8s.gcr.io的镜像受阻，本文将告诉你基于国内环境如何使用kubeadm工具来安装部署kubernetes集群。</p>
-<h1><span id="安装之前">安装之前</span></h1>
+<h1 id="安装之前">安装之前</h1>
 <p>本文将使用最简单的两台机器进行试验，节点信息如下：</p>
 <table>
 <thead>
@@ -252,7 +252,7 @@
 </tr>
 </tbody>
 </table>
-<h2><span id="前提条件">前提条件</span></h2>
+<h2 id="前提条件">前提条件</h2>
 <ul>
 <li>可行操作系统要求：Ubuntu 16.04+、Debian 9、CentOS 7、RHEL 7、Fedora 25/26 (best-effort)、HypriotOS v1.0.1+、Container Linux (tested with 1576.4.0)</li>
 <li>至少2GB RAM</li>
@@ -263,13 +263,13 @@
 <li>SELinux禁用</li>
 <li>Swap禁用</li>
 </ul>
-<h2><span id="修改hostname">修改hostname</span></h2>
+<h2 id="修改hostname">修改hostname</h2>
 <p>修改机器主机名</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hostnamectl --static <span class="built_in">set</span>-hostname k8s-m3</span><br></pre></td></tr></table></figure>
-<h2><span id="设置机器网络静态ip">设置机器网络静态IP</span></h2>
+<h2 id="设置机器网络静态ip">设置机器网络静态IP</h2>
 <p>CentOS默认使用dhcp方式连接网络，修改为静态ip地址</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/sysconfig/network-scripts/ifcfg-enp0s3</span><br><span class="line">...</span><br><span class="line">BOOTPROTO=static</span><br><span class="line">...</span><br><span class="line">ONBOOT=yes</span><br><span class="line">BROADCAST=192.168.1.255</span><br><span class="line">IPADDR=192.168.1.12</span><br><span class="line">NETMASK=255.255.255.0</span><br><span class="line">GATEWAY=192.168.1.1</span><br></pre></td></tr></table></figure>
-<h2><span id="确认mac地址和uuid是否唯一">确认MAC地址和UUID是否唯一</span></h2>
+<h2 id="确认mac地址和uuid是否唯一">确认MAC地址和UUID是否唯一</h2>
 <ul>
 <li>
 <p>使用命令查看mac地址<code>ip link</code> 或者 <code>ifconfig -a</code></p>
@@ -279,7 +279,7 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cat /sys/class/dmi/id/product_uuid</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h2><span id="检查特定网络端口">检查特定网络端口</span></h2>
+<h2 id="检查特定网络端口">检查特定网络端口</h2>
 <p>Master node(s)</p>
 <table>
 <thead>
@@ -362,15 +362,15 @@
 <p>节点之间进行安全认证通信，需要打开相应的网络端口，为了简单期间，内部网络节点可以直接关闭防火墙。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; systemctl <span class="built_in">disable</span> firewalld &amp;&amp; systemctl stop firewalld</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
 </blockquote>
-<h2><span id="selinux禁用">SELinux禁用</span></h2>
+<h2 id="selinux禁用">SELinux禁用</h2>
 <p>k8s要求禁用SELinux，使用如下命令：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ setenforce 0</span><br><span class="line">$ sed -i <span class="string">'s/SELINUX=enforcing/SELINUX=disabled/g'</span> /etc/selinux/config</span><br></pre></td></tr></table></figure>
-<h2><span id="swap禁用">Swap禁用</span></h2>
+<h2 id="swap禁用">Swap禁用</h2>
 <p>k8s团队建议禁用swap交换功能，能提升性能，需要修改fstab文件禁止swap挂载。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ swapoff -a &amp;&amp; sysctl -w vm.swappiness=0 </span><br><span class="line">$ sed <span class="string">'/swap.img/d'</span> -i /etc/fstab <span class="comment">#不同机器可能不同</span></span><br><span class="line">$ sed -i <span class="string">'s/(^.centos-swap swap.$)/#\1/'</span> /etc/fstab</span><br></pre></td></tr></table></figure>
 <p>安装之前的设置汇总如下：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 关闭防火墙</span></span><br><span class="line">systemctl stop firewalld &amp;&amp; systemctl <span class="built_in">disable</span> firewalld</span><br><span class="line"><span class="comment">## 关闭SELinux</span></span><br><span class="line">setenforce 0</span><br><span class="line">sed -i <span class="string">'s/SELINUX=enforcing/SELINUX=disabled/g'</span> /etc/selinux/config</span><br><span class="line"><span class="comment">## 设置参数</span></span><br><span class="line">cat &lt;&lt;EOF | tee /etc/sysctl.d/k8s.conf</span><br><span class="line">net.ipv4.ip_forward = 1</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="line">EOF</span><br><span class="line">sysctl -p /etc/sysctl.d/k8s.conf</span><br><span class="line"><span class="comment">## 禁用swap</span></span><br><span class="line">swapoff -a &amp;&amp; sysctl -w vm.swappiness=0</span><br><span class="line">sed <span class="string">'/swap.img/d'</span> -i /etc/fstab <span class="comment">#不同机器可能不同</span></span><br><span class="line">sed -i <span class="string">'s/(^.centos-swap swap.$)/#\1/'</span> /etc/fstab</span><br></pre></td></tr></table></figure>
-<h1><span id="安装工具组件">安装工具组件</span></h1>
+<h1 id="安装工具组件">安装工具组件</h1>
 <p>kubeadm使用静态Pod的方式安装其他组件，每个节点上需要安装docker、kubeadm、kubelet、kubectl。</p>
 <ul>
 <li><code>docker</code>：每个节点使用docker装载、运行镜像。</li>
@@ -378,7 +378,7 @@
 <li><code>kubelet</code>：每个几点都需要运行的组件，用来启动pod和容器等。</li>
 <li><code>kubectl</code>：命令行工具，用来和集群进行交互。</li>
 </ul>
-<h2><span id="安装docker">安装docker</span></h2>
+<h2 id="安装docker">安装docker</h2>
 <p>在每个节点机器上安装docker，docker版本推荐使用17.03，其他版本如1.11、1.12、1.13也运行良好，但是17.06+版本可能也可以但是没有经过k8s团队测试和验证。安装docker很简单，使用下面的命令即可安装最新版。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -fsSL https://get.docker.com/ | sh</span><br></pre></td></tr></table></figure>
 <blockquote>
@@ -386,12 +386,12 @@
 </blockquote>
 <p>使用如下命令在每个节点机器上开启docker</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl <span class="built_in">enable</span> docker &amp;&amp; systemctl start docker</span><br></pre></td></tr></table></figure>
-<h2><span id="安装kubelet-kubeadm-kubectl">安装kubelet、kubeadm、kubectl</span></h2>
+<h2 id="安装kubelet-kubeadm-kubectl">安装kubelet、kubeadm、kubectl</h2>
 <p>使用官方推荐的yum源进行安装，但是国内网络环境无法访问<code>packages.cloud.google.com</code>，我们需要使用国内阿里云提供的yum源进行安装。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 官方镜像yum源(国外网络使用)</span></span><br><span class="line">$ cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo</span><br><span class="line">[kubernetes]</span><br><span class="line">name=Kubernetes</span><br><span class="line">baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">repo_gpgcheck=1</span><br><span class="line">gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg</span><br><span class="line">EOF</span><br><span class="line"><span class="comment">## 阿里云镜像yum源(国内网络使用)</span></span><br><span class="line">$ cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo</span><br><span class="line">[kubernetes]</span><br><span class="line">name=Kubernetes</span><br><span class="line">baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">repo_gpgcheck=0</span><br><span class="line">gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg</span><br><span class="line">        http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">$ setenforce 0</span><br><span class="line">$ yum install -y kubelet kubeadm kubectl</span><br><span class="line">$ systemctl <span class="built_in">enable</span> kubelet &amp;&amp; systemctl start kubelet</span><br></pre></td></tr></table></figure>
-<h1><span id="部署集群">部署集群</span></h1>
+<h1 id="部署集群">部署集群</h1>
 <p>所有组件安装完成并启动之后，就可以初始化和设置集群了。使用如下命令简单初始化集群，然后查看状态。</p>
-<h2><span id="初始化集群">初始化集群</span></h2>
+<h2 id="初始化集群">初始化集群</h2>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">$ kubeadm init --service-cidr 10.96.0.0/12 \</span><br><span class="line">               --kubernetes-version v1.11.1 \</span><br><span class="line">               --pod-network-cidr 192.168.0.0/16 \</span><br><span class="line">               --token b0f7b8.8d1767876297d85c \</span><br><span class="line">               --apiserver-advertise-address 192.168.1.9</span><br><span class="line"></span><br><span class="line">......</span><br><span class="line">Your Kubernetes master has initialized successfully!</span><br><span class="line"></span><br><span class="line">To start using your cluster, you need to run the following as a regular user:</span><br><span class="line"></span><br><span class="line">  mkdir -p <span class="variable">$HOME</span>/.kube</span><br><span class="line">  sudo cp -i /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line">  sudo chown $(id -u):$(id -g) <span class="variable">$HOME</span>/.kube/config</span><br><span class="line"></span><br><span class="line">You should now deploy a pod network to the cluster.</span><br><span class="line">Run <span class="string">"kubectl apply -f [podnetwork].yaml"</span> with one of the options listed at:</span><br><span class="line">  https://kubernetes.io/docs/concepts/cluster-administration/addons/</span><br><span class="line"></span><br><span class="line">You can now join any number of machines by running the following on each node</span><br><span class="line">as root:</span><br><span class="line"></span><br><span class="line">  kubeadm join 192.168.1.12:6443 --token g1yor7.tdkxa53lmuulirzu --discovery-token-ca-cert-hash sha256:c10462631e76b83660042b16ac488f31c731e3188a655e3dc4fd58f746beb460</span><br></pre></td></tr></table></figure>
 <blockquote>
 <ul>
@@ -409,7 +409,7 @@
 <p>初始化如果顺利的话会看到kubeadm的下一步操作提示，这是查看node状态会发现是<code>NotReady</code>。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get node</span><br><span class="line">NAME      STATUS     ROLES     AGE       VERSION</span><br><span class="line">k8s-m3    NotReady   master    3m        v1.11.1</span><br></pre></td></tr></table></figure>
 <p>其实原因在提示语中已告诉我们，由于还没有安装kubernetes需要的网络插件，节点中各组件无法进行通信，所以接下来根据提示安装网络插件。</p>
-<h2><span id="安装pod网络插件">安装Pod网络插件</span></h2>
+<h2 id="安装pod网络插件">安装Pod网络插件</h2>
 <p>容器之间通信需要网络插件，打开<a href="https://kubernetes.io/docs/concepts/cluster-administration/addons/" target="_blank" rel="noopener">k8s插件说明链接</a>，链接中已列出很多可用的网络插件，这里我们使用Calico安装。打开<a href="https://docs.projectcalico.org/v3.1/getting-started/kubernetes/" target="_blank" rel="noopener">Calico快速安装说明</a>进行安装。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl apply -f \</span><br><span class="line">https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml</span><br><span class="line">$ kubectl apply -f \</span><br><span class="line">https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml</span><br><span class="line"></span><br><span class="line">......</span><br><span class="line">configmap <span class="string">"calico-config"</span> created</span><br><span class="line">daemonset <span class="string">"calico-etcd"</span> created</span><br><span class="line">service <span class="string">"calico-etcd"</span> created</span><br><span class="line">daemonset <span class="string">"calico-node"</span> created</span><br><span class="line">deployment <span class="string">"calico-kube-controllers"</span> created</span><br><span class="line">clusterrolebinding <span class="string">"calico-cni-plugin"</span> created</span><br><span class="line">clusterrole <span class="string">"calico-cni-plugin"</span> created</span><br><span class="line">serviceaccount <span class="string">"calico-cni-plugin"</span> created</span><br><span class="line">clusterrolebinding <span class="string">"calico-kube-controllers"</span> created</span><br><span class="line">clusterrole <span class="string">"calico-kube-controllers"</span> created</span><br><span class="line">serviceaccount <span class="string">"calico-kube-controllers"</span> created</span><br><span class="line"></span><br><span class="line">$ watch kubectl get pods --all-namespaces</span><br><span class="line">.....</span><br><span class="line">NAMESPACE    NAME                                       READY  STATUS   RESTARTS  AGE</span><br><span class="line">kube-system  calico-etcd-x2482                          1/1    Running  0         2m</span><br><span class="line">kube-system  calico-kube-controllers-6ff88bf6d4-tgtzb   1/1    Running  0         2m</span><br><span class="line">kube-system  calico-node-24h85                          2/2    Running  0         2m</span><br><span class="line">kube-system  etcd-jbaker-virtualbox                     1/1    Running  0         6m</span><br><span class="line">kube-system  kube-apiserver-jbaker-virtualbox           1/1    Running  0         6m</span><br><span class="line">kube-system  kube-controller-manager-jbaker-virtualbox  1/1    Running  0         6m</span><br><span class="line">kube-system  kube-dns-545bc4bfd4-67qqp                  3/3    Running  0         5m</span><br><span class="line">kube-system  kube-proxy-8fzp2                           1/1    Running  0         5m</span><br><span class="line">kube-system  kube-scheduler-jbaker-virtualbox           1/1    Running  0         5m</span><br></pre></td></tr></table></figure>
 <blockquote>
@@ -422,7 +422,7 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get node</span><br><span class="line">NAME      STATUS    ROLES     AGE       VERSION</span><br><span class="line">k8s-m3    Ready     master    19m       v1.11.1</span><br></pre></td></tr></table></figure>
 <p>让master节点也能被调度运行Pod</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl taint nodes --all node-role.kubernetes.io/master-</span><br><span class="line">node/k8s-m3 untainted</span><br></pre></td></tr></table></figure>
-<h2><span id="加入节点">加入节点</span></h2>
+<h2 id="加入节点">加入节点</h2>
 <p>当master节点上网络插件安装正确完成后，就可以加入node节点了，在要加入的node节点机器上运行如下命令即可。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ kubeadm join 192.168.1.12:6443 --token &lt;token&gt; --discovery-token-ca-cert-hash sha256:&lt;<span class="built_in">hash</span>&gt;</span><br></pre></td></tr></table></figure>
 <blockquote>
@@ -440,19 +440,19 @@
 <p>如果节点状态总是不能为Ready，可以使用命令查看event事件记录查找原因，往往都是由于网络无法下载k8s.gcr.io镜像导致。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; kubectl describe node k8s-n2</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
 </blockquote>
-<h2><span id="移除节点">移除节点</span></h2>
+<h2 id="移除节点">移除节点</h2>
 <p>移除节点需要先和master节点通信删除节点中所有运行容器</p>
 <figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl drain <span class="tag">&lt;node name&gt;</span> --delete-local-data --force --ignore-daemonsets</span><br><span class="line">kubectl delete <span class="keyword">node</span> <span class="title">&lt;node</span> name&gt;</span><br></pre></td></tr></table></figure>
 <p>再使用kubeadm重置删除节点</p>
 <figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">kubeadm reset</span></span><br></pre></td></tr></table></figure>
-<h2><span id="kubeadm命令">kubeadm命令</span></h2>
+<h2 id="kubeadm命令">kubeadm命令</h2>
 <ul>
 <li><code>kubeadm init</code>：初始化集群。</li>
 <li><code>kubeadm join</code>：添加集群节点。</li>
 <li><code>kubeadm reset</code>： 移除节点。</li>
 <li><code>kubeadm --help</code>：更多命令查看帮助。</li>
 </ul>
-<h1><span id="安装dashboard">安装Dashboard</span></h1>
+<h1 id="安装dashboard">安装Dashboard</h1>
 <p>集群搭建完成后，我们试着安装一个Dashboard应用来测试下我们的集群是否可用，参见<a href="https://github.com/kubernetes/dashboard#kubernetes-dashboard" target="_blank" rel="noopener">Dashboard</a>官方说明。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## dashboard文件：anonymous-proxy-rbac.yml  kubernetes-dashboard.yml</span></span><br><span class="line">$ kubectl apply -f ./dashboard/</span><br></pre></td></tr></table></figure>
 <ul>
@@ -467,10 +467,10 @@
 <p><code>https://{VIP}:6443/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/</code></p>
 <p>获取token，粘贴在网页中进行登录访问</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl -n kube-system create sa dashboard</span><br><span class="line">$ kubectl create clusterrolebinding dashboard --clusterrole cluster-admin --serviceaccount=kube-system:dashboard</span><br><span class="line">$ SECRET=$(kubectl -n kube-system get sa dashboard -o yaml | awk <span class="string">'/dashboard-token/ &#123;print $3&#125;'</span>)</span><br><span class="line">$ kubectl -n kube-system describe secrets <span class="variable">$&#123;SECRET&#125;</span> | awk <span class="string">'/token:/&#123;print $2&#125;'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 获取token命令：</span></span><br><span class="line">kubectl -n kube-system describe secrets $(kubectl -n kube-system get sa dashboard -o yaml | awk <span class="string">'/dashboard-token/ &#123;print $3&#125;'</span>) | awk <span class="string">'/token:/&#123;print $2&#125;'</span></span><br></pre></td></tr></table></figure>
-<h1><span id="安装metric-server">安装metric server</span></h1>
+<h1 id="安装metric-server">安装metric server</h1>
 <p><a href="https://github.com/kubernetes-incubator/metrics-server" target="_blank" rel="noopener">metic server</a>用来监控资源运行状态，可以在其基础上实现HPA，将来要取代heapter。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl create -f deploy/1.8+/</span><br><span class="line">$ kubectl top node</span><br><span class="line">$ kubectl top pod --all-namespaces</span><br></pre></td></tr></table></figure>
-<h1><span id="troubleshooting">Troubleshooting</span></h1>
+<h1 id="troubleshooting">Troubleshooting</h1>
 <ol>
 <li>
 <p><code>kubeadm init</code>命令运行报错：</p>
@@ -540,7 +540,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">安装之前</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">前提条件</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">修改hostname</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">设置机器网络静态IP</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">确认MAC地址和UUID是否唯一</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.5.</span> <span class="toc-nav-text">检查特定网络端口</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.6.</span> <span class="toc-nav-text">SELinux禁用</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.7.</span> <span class="toc-nav-text">Swap禁用</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">安装工具组件</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">安装docker</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">安装kubelet、kubeadm、kubectl</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">部署集群</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">初始化集群</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">安装Pod网络插件</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">加入节点</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.4.</span> <span class="toc-nav-text">移除节点</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.5.</span> <span class="toc-nav-text">kubeadm命令</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">安装Dashboard</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">安装metric server</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">Troubleshooting</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#安装之前"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">安装之前</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#前提条件"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">前提条件</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#修改hostname"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">修改hostname</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#设置机器网络静态ip"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">设置机器网络静态IP</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#确认mac地址和uuid是否唯一"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">确认MAC地址和UUID是否唯一</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#检查特定网络端口"><span class="toc-nav-number">1.5.</span> <span class="toc-nav-text">检查特定网络端口</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#selinux禁用"><span class="toc-nav-number">1.6.</span> <span class="toc-nav-text">SELinux禁用</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#swap禁用"><span class="toc-nav-number">1.7.</span> <span class="toc-nav-text">Swap禁用</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#安装工具组件"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">安装工具组件</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#安装docker"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">安装docker</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#安装kubelet-kubeadm-kubectl"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">安装kubelet、kubeadm、kubectl</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#部署集群"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">部署集群</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#初始化集群"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">初始化集群</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#安装pod网络插件"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">安装Pod网络插件</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#加入节点"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">加入节点</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#移除节点"><span class="toc-nav-number">3.4.</span> <span class="toc-nav-text">移除节点</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#kubeadm命令"><span class="toc-nav-number">3.5.</span> <span class="toc-nav-text">kubeadm命令</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#安装dashboard"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">安装Dashboard</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#安装metric-server"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">安装metric server</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#troubleshooting"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">Troubleshooting</span></a></li></ol>
         
         </div>
       </aside>
@@ -560,9 +560,9 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#kubeadm" title="kubeadm">kubeadm</a>
-                        
                           <a class="tag" href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
+                        
+                          <a class="tag" href="/tags/#kubeadm" title="kubeadm">kubeadm</a>
                         
                     </div>
                 </section>

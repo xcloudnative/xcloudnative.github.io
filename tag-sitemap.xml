@@ -30,14 +30,14 @@
     </url>
 
     <url>
-        <loc>http://yoursite-url/tags/kubeadm/</loc>
+        <loc>http://yoursite-url/tags/kubernetes/</loc>
         <lastmod>2018-07-27T12:42:55.845Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://yoursite-url/tags/kubernetes/</loc>
+        <loc>http://yoursite-url/tags/kubeadm/</loc>
         <lastmod>2018-07-27T12:42:55.845Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
